@@ -3,10 +3,10 @@
    (Projekteinstellungen > Allgemein > Deine Apps > Web-App > Konfiguration).
    Ersetze jedes "HIER_EINFUEGEN" durch den echten Wert (in den Anführungszeichen lassen). */
 export const firebaseConfig = {
-  apiKey: "HIER_EINFUEGEN",
+  apiKey: "AIzaSyB2-F0RJWtzmVQT-XjY4uwaUb4EyXNKwuU",
   authDomain: "AIzaSyCLsUVyksvJqROY2iKKOpSu4lN37_LI2PA",
-  projectId: "wedding4927",
-  storageBucket: "wedding4927.firebasestorage.app",
-  messagingSenderId: "1051505725631",
-  appId: "1:1051505725631:web:53615f3bb14818f795b60a",
+  projectId: "philippjohn1-creator",
+  storageBucket: "philippjohn1-creator.firebasestorage.app",
+  messagingSenderId: "902028594493",
+  appId: "1:902028594493:web:7d4dda8130188ad3bb8954"
 };
