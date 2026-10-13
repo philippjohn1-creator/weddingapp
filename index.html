@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wedding</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Wedding">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#111111">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" type="image/png" href="icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ladeanzeige -->
+  <div id="lade" class="lade" hidden>
+    <div class="lade-innen">
+      <div id="lade-spinner" class="spinner" aria-hidden="true"></div>
+      <p id="lade-text"></p>
+      <div id="lade-aktionen" class="knopf-spalte" hidden>
+        <button type="button" class="knopf primaer breit" data-aktion="lade-nochmal">Erneut versuchen</button>
+        <button type="button" class="knopf breit" data-aktion="lade-lokal">Lieber lokal speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. Speicherort wählen -->
+  <main id="schirm-wahl" class="schirm" hidden>
+    <div class="schirm-innen">
+      <h1 class="gross-titel">Wedding</h1>
+      <p class="untertitel">Euer Hochzeitsplaner</p>
+      <p>Wo sollen eure Daten gespeichert werden?</p>
+      <div class="knopf-spalte">
+        <button type="button" class="knopf primaer breit gross" data-aktion="wahl-lokal">Lokal auf diesem Gerät</button>
+        <p class="hinweis">Kein Konto nötig. Die Daten bleiben nur auf diesem Gerät.</p>
+        <button type="button" class="knopf breit gross" data-aktion="wahl-cloud">In der Cloud (mit Konto)</button>
+        <p class="hinweis">Beide Partner melden sich mit denselben Zugangsdaten an und sehen dieselben Daten.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 2. Anmeldung (Cloud) -->
+  <main id="schirm-login" class="schirm" hidden>
+    <div class="schirm-innen">
+      <h1 class="gross-titel">Anmelden</h1>
+      <p class="untertitel">Ein Konto für euch beide</p>
+      <form id="login-form" class="karte" novalidate>
+        <div class="feld">
+          <label for="login-email">E-Mail</label>
+          <input id="login-email" type="email" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off">
+        </div>
+        <div class="feld">
+          <label for="login-pw">Passwort</label>
+          <input id="login-pw" type="password" autocomplete="current-password">
+        </div>
+        <p id="login-meldung" class="meldung" role="alert" hidden></p>
+        <div class="knopf-spalte">
+          <button type="submit" class="knopf primaer breit">Anmelden</button>
+          <button type="button" class="knopf breit" data-aktion="registrieren">Neues Konto erstellen</button>
+          <button type="button" class="knopf text breit" data-aktion="passwort-vergessen">Passwort vergessen</button>
+          <button type="button" class="knopf text breit" data-aktion="lieber-lokal">Lieber lokal speichern</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- 3. Willkommen -->
+  <main id="schirm-willkommen" class="schirm" hidden>
+    <div class="schirm-innen">
+      <h1 class="gross-titel">Willkommen</h1>
+      <p class="untertitel">Erzählt uns kurz von eurer Hochzeit</p>
+      <form id="willkommen-form" class="karte" novalidate>
+        <div class="feld">
+          <label for="w-name1">Name 1 *</label>
+          <input id="w-name1" type="text" autocomplete="off" maxlength="40">
+        </div>
+        <div class="feld">
+          <label for="w-name2">Name 2 *</label>
+          <input id="w-name2" type="text" autocomplete="off" maxlength="40">
+        </div>
+        <div class="feld">
+          <label for="w-datum">Hochzeitsdatum *</label>
+          <input id="w-datum" type="date">
+        </div>
+        <div class="feld">
+          <label for="w-budget">Gesamtbudget in Euro (freiwillig)</label>
+          <input id="w-budget" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 20000">
+        </div>
+        <p id="w-fehler" class="fehler" role="alert"></p>
+        <button type="submit" class="knopf primaer breit">Los geht’s</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- 4. Die App -->
+  <div id="app" hidden>
+    <div class="oben">
+      <header class="kopf">
+        <h1 id="app-titel">Wedding</h1>
+        <span id="sync-status" class="sync" aria-live="polite"></span>
+      </header>
+      <nav id="nav" class="nav" aria-label="Bereiche"></nav>
+    </div>
+
+    <main class="inhalt">
+
+      <!-- Start -->
+      <section id="v-start" class="ansicht" hidden>
+        <div id="start-countdown" class="karte cd"></div>
+        <div id="start-uebersicht" class="kacheln"></div>
+        <div class="karte">
+          <h2>Kalender</h2>
+          <p class="hinweis">Eine Web-App darf den Apple Kalender nicht direkt beschreiben. Darum erstellt die App eine .ics-Datei mit allen offenen Aufgaben und dem Hochzeitstag. Auf dem iPhone teilst du sie und tippst dann auf „Zum Kalender hinzufügen“.</p>
+          <button type="button" class="knopf primaer breit" data-aktion="ics">Kalender-Datei erstellen</button>
+        </div>
+      </section>
+
+      <!-- Checkliste -->
+      <section id="v-checkliste" class="ansicht" hidden>
+        <div class="karte">
+          <p class="fortschritt-text"><strong id="ck-text"></strong></p>
+          <div class="balken" role="progressbar" aria-label="Fortschritt der Aufgaben"><div id="ck-balken"></div></div>
+        </div>
+        <button type="button" class="knopf gold breit" data-aktion="aufgabe-neu">Aufgabe hinzufügen</button>
+        <ul id="ck-liste" class="liste"></ul>
+      </section>
+
+      <!-- Budget -->
+      <section id="v-budget" class="ansicht" hidden>
+        <div id="b-summe" class="karte"></div>
+        <div class="knopf-reihe">
+          <button type="button" class="knopf gold" data-aktion="budget-neu">Kategorie hinzufügen</button>
+          <button type="button" class="knopf" data-aktion="budget-vorlage-loeschen">Vorlage löschen</button>
+        </div>
+        <ul id="b-liste" class="liste"></ul>
+      </section>
+
+      <!-- Gäste -->
+      <section id="v-gaeste" class="ansicht" hidden>
+        <div id="g-summe" class="karte"></div>
+        <div id="g-enger" class="karte"></div>
+        <button type="button" class="knopf gold breit" data-aktion="gast-neu">Gast hinzufügen</button>
+        <div id="g-filter" class="chips"></div>
+        <ul id="g-liste" class="liste"></ul>
+      </section>
+
+      <!-- Dienstleister -->
+      <section id="v-dienstleister" class="ansicht" hidden>
+        <button type="button" class="knopf gold breit" data-aktion="dl-neu">Dienstleister hinzufügen</button>
+        <ul id="d-liste" class="liste"></ul>
+      </section>
+
+      <!-- Ablauf -->
+      <section id="v-ablauf" class="ansicht" hidden>
+        <div class="knopf-reihe">
+          <button type="button" class="knopf gold" data-aktion="ablauf-neu">Programmpunkt hinzufügen</button>
+          <button type="button" class="knopf" data-aktion="ablauf-sortieren">Nach Uhrzeit sortieren</button>
+        </div>
+        <p class="hinweis">Zum Verschieben das Symbol ☰ gedrückt halten und ziehen.</p>
+        <ul id="a-liste" class="liste"></ul>
+      </section>
+
+      <!-- Notizen -->
+      <section id="v-notizen" class="ansicht" hidden>
+        <button type="button" class="knopf gold breit" data-aktion="notiz-neu">Notiz hinzufügen</button>
+        <div id="n-filter" class="chips"></div>
+        <ul id="n-liste" class="liste"></ul>
+        <div class="karte">
+          <h2>Kategorien</h2>
+          <div id="n-kategorien"></div>
+          <button type="button" class="knopf breit" data-aktion="kat-neu">Neue Kategorie</button>
+        </div>
+      </section>
+
+      <!-- Einstellungen -->
+      <section id="v-einstellungen" class="ansicht" hidden>
+        <div class="karte">
+          <h2>Eure Hochzeit</h2>
+          <div class="feld">
+            <label for="e-name1">Name 1</label>
+            <input id="e-name1" type="text" autocomplete="off" maxlength="40">
+          </div>
+          <div class="feld">
+            <label for="e-name2">Name 2</label>
+            <input id="e-name2" type="text" autocomplete="off" maxlength="40">
+          </div>
+          <div class="feld">
+            <label for="e-datum">Hochzeitsdatum</label>
+            <input id="e-datum" type="date">
+          </div>
+          <div class="feld">
+            <label for="e-budget">Gesamtbudget in Euro (freiwillig)</label>
+            <input id="e-budget" type="text" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="feld">
+            <label for="e-enger">Name des engeren Kreises</label>
+            <input id="e-enger" type="text" autocomplete="off" maxlength="40">
+          </div>
+          <p id="e-meldung" class="meldung" role="status" hidden></p>
+          <button type="button" class="knopf primaer breit" data-aktion="einst-speichern">Änderungen speichern</button>
+        </div>
+
+        <div class="karte">
+          <h2>Speicherort</h2>
+          <p id="ort-text"></p>
+          <button type="button" class="knopf breit" data-aktion="speicherort-wechseln">Speicherort wechseln</button>
+        </div>
+
+        <div id="konto-karte" class="karte" hidden>
+          <h2>Konto</h2>
+          <p id="konto-text"></p>
+          <button type="button" class="knopf breit" data-aktion="abmelden">Abmelden</button>
+        </div>
+
+        <div class="karte">
+          <h2>Alle Daten löschen</h2>
+          <p class="hinweis">Löscht Aufgaben, Budget, Gäste und alles andere an diesem Speicherort.</p>
+          <button type="button" class="knopf gefahr breit" data-aktion="alles-loeschen">Alle Daten löschen</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Eingabefenster -->
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-titel">
+    <form id="modal-form" class="modal-karte" novalidate>
+      <h2 id="modal-titel"></h2>
+      <div id="modal-felder"></div>
+      <p id="modal-fehler" class="fehler" role="alert"></p>
+      <div class="knopf-reihe">
+        <button type="button" class="knopf" data-aktion="modal-abbrechen">Abbrechen</button>
+        <button type="submit" id="modal-ok" class="knopf primaer">Speichern</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+// Firestore-Regeln für Wedding
+// Einfügen in: Firebase-Konsole > Firestore Database > Regeln > Veröffentlichen
+// Jedes Konto darf nur sein eigenes Dokument paare/{uid} lesen und schreiben.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /paare/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
